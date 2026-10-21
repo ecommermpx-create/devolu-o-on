@@ -1,0 +1,1915 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DEVOLUÇÃO ON — V1.9.1</title>
+<style>
+:root{
+ --wine:#971923;--wine-dark:#4b0a12;--wine-light:#f9e9eb;
+ --gold:#efb75f;--gold-light:#fff5e5;--ink:#252b38;
+ --muted:#79808f;--background:#f5f6f9;--white:#fff;
+ --border:#e7e9ef;--green:#17764c;--green-light:#e6f6ee;
+ --blue:#315f9c;--blue-light:#eaf2ff;--red:#ba3042;
+ --shadow:0 5px 25px rgba(30,25,40,.045)
+}
+*{box-sizing:border-box}
+body{
+ margin:0;background:var(--background);color:var(--ink);
+ font-family:Inter,"Segoe UI",Arial,sans-serif;font-size:14px
+}
+button,input,select,textarea{font:inherit}
+button{
+ border:0;border-radius:10px;padding:11px 16px;
+ background:var(--wine);color:white;font-weight:650;cursor:pointer
+}
+button:hover{filter:brightness(.96)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.secondary{background:#f0f1f5;color:#394252}
+button.green{background:var(--green)}
+button.danger{background:var(--red)}
+button.outline{background:white;border:1px solid var(--border);color:var(--ink)}
+button.small{padding:7px 11px;font-size:12px}
+input,select,textarea{
+ width:100%;padding:12px;border:1px solid #dce0e8;
+ border-radius:10px;background:#fff;color:var(--ink);outline:none
+}
+input:focus,select:focus,textarea:focus{
+ border-color:#bd777e;box-shadow:0 0 0 3px #97192313
+}
+label{display:block;font-size:12px;font-weight:700;margin-bottom:7px}
+h1,h2,h3,p{margin-top:0}
+h1{font-size:27px;letter-spacing:-.7px;margin-bottom:6px}
+h2{font-size:19px;margin-bottom:14px}
+h3{font-size:15px;margin-bottom:12px}
+p{line-height:1.6}
+.muted{color:var(--muted)}
+.hidden{display:none!important}
+.layout{display:flex;min-height:100vh}
+.sidebar{
+ width:254px;flex-shrink:0;position:sticky;top:0;height:100vh;
+ padding:26px 15px 17px;
+ background:linear-gradient(170deg,#18080c,#360910 62%,#520e19);
+ color:#fff;display:flex;flex-direction:column
+}
+.brand{
+ display:flex;align-items:center;gap:12px;padding:0 8px 25px;
+ border-bottom:1px solid #ffffff19
+}
+.brandmark{
+ width:54px;height:54px;display:grid;place-items:center;
+ border:1px solid #d9a45a70;background:#32120f;
+ border-radius:15px;font-size:28px;font-weight:900;color:var(--gold)
+}
+.brand strong{display:block;color:#fff;font-size:16px;line-height:1.25}
+.brand small{
+ display:block;color:var(--gold);font-size:10px;
+ letter-spacing:1.3px;margin-top:5px
+}
+.navgroup{
+ margin:25px 10px 11px;font-size:10px;color:#b88f95;
+ letter-spacing:1.6px;font-weight:800
+}
+.nav{display:grid;gap:5px}
+.nav button{
+ display:flex;align-items:center;gap:13px;width:100%;
+ text-align:left;padding:13px 14px;border-radius:10px;
+ background:transparent;color:#e0cbd0;font-size:13px;font-weight:600
+}
+.nav button.active{
+ background:linear-gradient(90deg,#aa2430,#7e1721);color:white
+}
+.nav button:hover:not(.active){background:#ffffff0d}
+.nav .symbol{
+ display:grid;place-items:center;width:22px;
+ font-size:18px;color:var(--gold)
+}
+.sidebar-bottom{
+ margin-top:auto;border-top:1px solid #ffffff20;
+ padding:17px 10px 0;color:#caaeb4;font-size:11px;line-height:1.8
+}
+.sidebar-bottom b{color:var(--gold)}
+.workspace{flex:1;min-width:0}
+.topbar{
+ height:72px;display:flex;align-items:center;justify-content:space-between;
+ gap:15px;padding:0 35px;background:white;
+ border-bottom:1px solid var(--border)
+}
+.breadcrumb{font-size:12px;color:var(--muted)}
+.breadcrumb strong{color:var(--wine)}
+.version{
+ font-size:11px;padding:7px 11px;background:var(--gold-light);
+ border:1px solid #f4dfb9;border-radius:30px;color:#986522;font-weight:800
+}
+.content{padding:32px 35px;max-width:1700px;margin:auto}
+.page-heading{
+ display:flex;align-items:center;justify-content:space-between;
+ gap:15px;flex-wrap:wrap;margin-bottom:26px
+}
+.page-heading p{margin:0;color:var(--muted)}
+.card{
+ background:white;border:1px solid var(--border);
+ border-radius:16px;box-shadow:var(--shadow);
+ padding:23px;margin-bottom:20px
+}
+.card-title{
+ display:flex;justify-content:space-between;align-items:center;
+ gap:12px;flex-wrap:wrap;margin-bottom:18px
+}
+.card-title h2{margin:0}
+.stats{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:16px;margin-bottom:22px
+}
+.stat{
+ background:white;border:1px solid var(--border);
+ border-radius:16px;padding:21px;box-shadow:var(--shadow);
+ position:relative;overflow:hidden
+}
+.stat:before{
+ content:"";position:absolute;left:0;top:0;bottom:0;
+ width:4px;background:var(--wine)
+}
+.stat.goldline:before{background:var(--gold)}
+.stat.greenline:before{background:var(--green)}
+.stat.blueline:before{background:var(--blue)}
+.stat .stat-top{
+ display:flex;align-items:center;justify-content:space-between;
+ gap:8px;color:var(--muted);font-size:12px;font-weight:600
+}
+.stat .stat-icon{
+ display:grid;place-items:center;width:35px;height:35px;
+ border-radius:10px;background:var(--wine-light);
+ color:var(--wine);font-size:18px
+}
+.stat strong{display:block;font-size:30px;margin-top:17px}
+.stat small{display:block;margin-top:7px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.field{margin-bottom:16px}
+.actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.banner{
+ display:flex;align-items:center;gap:15px;
+ background:linear-gradient(105deg,#390c15,#8f1b28);
+ color:white;padding:25px;border-radius:16px;margin-bottom:22px
+}
+.banner .round{
+ width:50px;height:50px;flex-shrink:0;border-radius:15px;
+ background:#ffffff17;display:grid;place-items:center;
+ color:var(--gold);font-size:26px
+}
+.banner h2{margin:0 0 6px;color:white}
+.banner p{margin:0;color:#ecd5d8;font-size:13px}
+.banner button{
+ background:var(--gold);color:#4e2b0e;
+ margin-left:auto;white-space:nowrap
+}
+.steps{
+ display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+ gap:12px;margin-bottom:20px
+}
+.step{
+ border:1px solid var(--border);background:white;
+ border-radius:13px;padding:15px
+}
+.step-number{
+ display:grid;place-items:center;width:28px;height:28px;
+ border-radius:50%;background:var(--wine-light);
+ color:var(--wine);font-weight:800;margin-bottom:11px
+}
+.step strong{font-size:12px;display:block}
+.step small{
+ display:block;color:var(--muted);
+ margin-top:6px;line-height:1.5
+}
+.notice{
+ background:var(--gold-light);border:1px solid #f2dcb7;
+ color:#775321;border-radius:11px;padding:14px 16px;
+ font-size:13px;line-height:1.6;margin-bottom:18px
+}
+.info{
+ background:var(--blue-light);border:1px solid #d7e5f7;
+ color:#315b8b;border-radius:11px;padding:14px;
+ font-size:13px;margin-bottom:18px
+}
+.product{
+ border:1px solid var(--border);border-radius:13px;
+ padding:18px;margin-bottom:14px;background:#fcfcfe
+}
+.product-head{
+ display:flex;align-items:center;justify-content:space-between;
+ gap:10px;margin-bottom:16px
+}
+.product-head h3{margin:0}
+.result{
+ border-radius:10px;padding:13px;background:#eef0f5;
+ color:#596477;margin-top:4px;font-size:13px;line-height:1.6
+}
+.result.ok{background:var(--green-light);color:#176440}
+.result.warn{background:var(--gold-light);color:#815a22}
+.result.bad{background:#fde9eb;color:#9b2432}
+.tablewrap{overflow-x:auto}
+table{width:100%;min-width:930px;border-collapse:collapse}
+th{
+ text-align:left;background:#f7f8fa;color:#687283;
+ font-size:11px;padding:13px 12px;font-weight:800;white-space:nowrap
+}
+td{
+ border-bottom:1px solid #edf0f3;padding:14px 12px;
+ font-size:12px;vertical-align:middle
+}
+tr:last-child td{border-bottom:0}
+.row-actions{display:flex;gap:6px;flex-wrap:wrap}
+.pill{
+ display:inline-block;border-radius:30px;padding:6px 10px;
+ font-size:10px;font-weight:800;white-space:nowrap
+}
+.pill.pendente,.pill.aguardando{background:#fff2d9;color:#93610d}
+.pill.revisao{background:#fbe5e8;color:#a12938}
+.pill.aprovado,.pill.pronto{background:#e7efff;color:#285a98}
+.pill.concluido,.pill.executado{background:#e3f5eb;color:#167047}
+.pill.rascunho{background:#edf0f4;color:#67717d}
+.empty{text-align:center;padding:35px;color:var(--muted)}
+.photo-preview{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.photo-preview img{
+ width:85px;height:85px;object-fit:cover;
+ border-radius:10px;border:1px solid var(--border)
+}
+.photo-preview .photo{display:grid;gap:6px}
+.mini-summary{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:12px;margin-bottom:20px
+}
+.mini{
+ background:#fafbfc;border:1px solid var(--border);
+ border-radius:12px;padding:16px
+}
+.mini span{display:block;color:var(--muted);font-size:12px}
+.mini strong{display:block;font-size:25px;margin-top:9px}
+.filter-panel{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:12px;margin-bottom:18px
+}
+.filter-panel .field{margin-bottom:0}
+.bar-row{
+ display:grid;grid-template-columns:110px 1fr 40px;
+ align-items:center;gap:10px;margin:13px 0;font-size:12px
+}
+.bar-track{
+ height:10px;background:#edf0f5;border-radius:20px;overflow:hidden
+}
+.bar-fill{
+ height:100%;background:linear-gradient(90deg,var(--wine),var(--gold));
+ border-radius:20px
+}
+.timeline{display:flex;flex-direction:column;gap:10px}
+.timeline-item{
+ border-left:3px solid var(--gold);padding:8px 12px;
+ background:#fafbfc;border-radius:0 9px 9px 0;font-size:12px
+}
+.timeline-item small{
+ display:block;color:var(--muted);margin-bottom:5px
+}
+.detail-block{
+ background:#fafbfc;border:1px solid var(--border);
+ border-radius:11px;padding:16px;margin-bottom:12px
+}
+.detail-block h3{margin:0 0 12px}
+.detail-pairs{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px
+}
+.detail-pairs span{display:block;color:var(--muted);font-size:11px}
+.detail-pairs strong{display:block;margin-top:6px;font-size:14px}
+.progress{
+ height:8px;background:#edf0f4;border-radius:20px;
+ overflow:hidden;margin:10px 0
+}
+.progress>div{
+ height:100%;background:var(--green);border-radius:20px
+}
+.dialog-backdrop{
+ position:fixed;inset:0;background:#140c10a6;z-index:30;
+ display:flex;align-items:center;justify-content:center;padding:18px
+}
+.dialog{
+ width:min(750px,100%);max-height:90vh;overflow-y:auto;
+ background:white;border-radius:18px;padding:25px;
+ box-shadow:0 25px 70px #0004
+}
+.dialog-head{
+ display:flex;justify-content:space-between;
+ align-items:center;gap:12px;margin-bottom:17px
+}
+.dialog-head h2{margin:0}
+.dialog-close{
+ background:#f0f1f5;color:var(--ink);padding:8px 12px
+}
+.delete-note{
+ background:#fde9eb;color:#922432;border:1px solid #f3c9ce;
+ padding:13px;border-radius:10px;margin:14px 0;font-size:13px
+}
+@media(max-width:1150px){
+ .stats{grid-template-columns:repeat(2,1fr)}
+ .steps{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:850px){
+ .sidebar{width:205px}
+ .topbar{padding:0 20px}
+ .content{padding:22px 20px}
+ .grid,.filter-panel{grid-template-columns:1fr}
+}
+@media(max-width:650px){
+ .layout{display:block}
+ .sidebar{width:100%;height:auto;position:relative;padding:13px}
+ .brand{padding:0 4px 12px}
+ .navgroup,.sidebar-bottom{display:none}
+ .nav{display:flex;overflow-x:auto;gap:5px;padding-top:12px}
+ .nav button{white-space:nowrap;padding:10px}
+ .topbar{height:54px}
+ .content{padding:16px}
+ .stats,.mini-summary{grid-template-columns:1fr 1fr}
+ .steps{grid-template-columns:repeat(2,1fr)}
+ .banner{flex-wrap:wrap}
+ .banner button{margin-left:0;width:100%}
+ .detail-pairs{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+<aside class="sidebar">
+ <div class="brand">
+  <div class="brandmark">↩</div>
+  <div>
+   <strong>DEVOLUÇÃO<br>ON</strong>
+   <small>GESTÃO DE ESTOQUE</small>
+  </div>
+ </div>
+
+ <div class="navgroup">PRINCIPAL</div>
+ <nav class="nav">
+  <button id="nav-painel" onclick="abrir('painel')">
+   <span class="symbol">⌂</span> Visão geral
+  </button>
+  <button id="nav-cadastro" onclick="novo()">
+   <span class="symbol">＋</span> Nova reclamação
+  </button>
+  <button id="nav-conferencia" onclick="abrir('conferencia')">
+   <span class="symbol">✓</span> Conferência
+  </button>
+  <button id="nav-retornos" onclick="abrir('retornos')">
+   <span class="symbol">↩</span> Devoluções
+  </button>
+  <button id="nav-relatorio" onclick="abrir('relatorio')">
+   <span class="symbol">⇄</span> Ajustes Sysemp
+  </button>
+  <button id="nav-historico" onclick="abrir('historico')">
+   <span class="symbol">▤</span> Histórico
+  </button>
+  <button id="nav-indicadores" onclick="abrir('indicadores')">
+   <span class="symbol">▥</span> Indicadores
+  </button>
+ </nav>
+
+ <div class="sidebar-bottom">
+  <b>DEVOLUÇÃO ON</b><br>
+  Controle de erros de expedição<br>
+  Movimentações manuais no Sysemp
+ </div>
+</aside>
+
+<div class="workspace">
+<header class="topbar">
+ <div class="breadcrumb">
+  ÁREA DE TRABALHO / <strong id="localAtual">Visão geral</strong>
+ </div>
+ <span class="version">VERSÃO 1.9.1</span>
+</header>
+
+<main class="content">
+<div class="page-heading">
+ <div>
+  <h1 id="tituloPagina">Visão geral</h1>
+  <p id="descricaoPagina">Acompanhe as reclamações e os ajustes pendentes.</p>
+ </div>
+ <button id="botaoNova" onclick="novo()">＋ Nova reclamação</button>
+</div>
+
+<section id="painel">
+ <div class="stats">
+  <div class="stat">
+   <div class="stat-top">Reclamações <span class="stat-icon">▤</span></div>
+   <strong id="sTotal">0</strong>
+   <small>Ocorrências cadastradas</small>
+  </div>
+  <div class="stat goldline">
+   <div class="stat-top">Conferências <span class="stat-icon">✓</span></div>
+   <strong id="sConf">0</strong>
+   <small>Aguardando verificação</small>
+  </div>
+  <div class="stat blueline">
+   <div class="stat-top">Ajustes Sysemp <span class="stat-icon">⇄</span></div>
+   <strong id="sAjustes">0</strong>
+   <small>Movimentações pendentes</small>
+  </div>
+  <div class="stat greenline">
+   <div class="stat-top">Retornos em aberto <span class="stat-icon">↩</span></div>
+   <strong id="sRetornos">0</strong>
+   <small>Produtos sem destino definido</small>
+  </div>
+ </div>
+
+ <div class="banner">
+  <div class="round">＋</div>
+  <div>
+   <h2>Recebeu uma reclamação de produto errado?</h2>
+   <p>Registre a ocorrência para identificar e corrigir possíveis furos no estoque.</p>
+  </div>
+  <button onclick="novo()">Registrar reclamação →</button>
+ </div>
+
+ <div class="card">
+  <div class="card-title">
+   <h2>Como funciona o processo</h2>
+   <span class="muted">5 etapas</span>
+  </div>
+  <div class="steps">
+   <div class="step">
+    <div class="step-number">1</div>
+    <strong>Reclamação</strong>
+    <small>Registre os dois SKUs e a quantidade.</small>
+   </div>
+   <div class="step">
+    <div class="step-number">2</div>
+    <strong>Conferência</strong>
+    <small>Confirme o estoque físico.</small>
+   </div>
+   <div class="step">
+    <div class="step-number">3</div>
+    <strong>Devolução</strong>
+    <small>Registre o retorno ou destino do produto.</small>
+   </div>
+   <div class="step">
+    <div class="step-number">4</div>
+    <strong>Ajustes</strong>
+    <small>Faça entradas e baixas no Sysemp.</small>
+   </div>
+   <div class="step">
+    <div class="step-number">5</div>
+    <strong>Conclusão</strong>
+    <small>Confirme cada ajuste executado.</small>
+   </div>
+  </div>
+ </div>
+
+ <div class="card">
+  <div class="card-title">
+   <h2>Ocorrências que precisam de atenção</h2>
+   <button class="outline small" onclick="abrir('historico')">
+    Ver histórico →
+   </button>
+  </div>
+  <div class="tablewrap">
+   <table>
+    <thead>
+     <tr>
+      <th>CONTA</th><th>VENDA</th><th>DATA</th>
+      <th>PROGRESSO</th><th>SITUAÇÃO</th><th>AÇÃO</th>
+     </tr>
+    </thead>
+    <tbody id="tRecentes"></tbody>
+   </table>
+  </div>
+ </div>
+</section>
+
+<section id="cadastro" class="hidden">
+ <div class="card">
+  <div class="card-title">
+   <h2 id="tituloForm">Registrar reclamação</h2>
+   <span class="pill pendente">ETAPA 1</span>
+  </div>
+  <div class="info">
+   Informe o SKU descontado no Sysemp e o SKU realmente enviado ao cliente.
+  </div>
+  <div class="grid">
+   <div class="field">
+    <label>Conta Mercado Livre</label>
+    <select id="conta">
+     <option>ABX</option><option>GTX</option><option>DANFERX</option>
+     <option>RWX</option><option>DBX</option>
+    </select>
+   </div>
+   <div class="field">
+    <label>Número da venda</label>
+    <input id="venda" placeholder="Digite o número da venda">
+   </div>
+   <div class="field">
+    <label>Data da reclamação</label>
+    <input id="data" type="date">
+   </div>
+  </div>
+
+  <div class="card-title">
+   <h2>Produtos envolvidos</h2>
+   <button class="outline small" onclick="adicionarLinha()">
+    ＋ Adicionar produto
+   </button>
+  </div>
+  <div id="itens"></div>
+
+  <div class="field">
+   <label>Observações</label>
+   <textarea id="obs" rows="3" placeholder="Descreva a reclamação..."></textarea>
+  </div>
+  <div class="field">
+   <label>Fotos</label>
+   <input id="fotoInput" type="file" accept="image/*" multiple>
+   <p class="muted" style="font-size:12px;margin-top:7px">
+    Até 3 fotos por ocorrência.
+   </p>
+   <div class="photo-preview" id="fotosPreview"></div>
+  </div>
+
+  <div class="actions">
+   <button onclick="salvar(false)">Salvar e enviar para conferência</button>
+   <button class="secondary" onclick="salvar(true)">Salvar rascunho</button>
+   <button class="outline" onclick="abrir('historico')">Cancelar</button>
+  </div>
+ </div>
+</section>
+
+<section id="conferencia" class="hidden">
+ <div class="card">
+  <div class="card-title">
+   <h2>Conferências pendentes</h2>
+   <span class="pill pendente">ETAPA 2</span>
+  </div>
+  <div class="notice">
+   Antes de liberar uma entrada, confirme fisicamente que o SKU descontado
+   permanece no estoque e que nenhuma correção anterior foi realizada.
+  </div>
+  <div class="tablewrap">
+   <table>
+    <thead>
+     <tr>
+      <th>CONTA</th><th>VENDA</th><th>SKU DESCONTADO</th>
+      <th>SKU ENVIADO</th><th>QTD.</th><th>SITUAÇÃO</th><th>AÇÕES</th>
+     </tr>
+    </thead>
+    <tbody id="tConferencia"></tbody>
+   </table>
+  </div>
+ </div>
+</section>
+
+<section id="retornos" class="hidden">
+ <div class="card">
+  <div class="card-title">
+   <h2>Acompanhamento das devoluções</h2>
+   <span class="pill aprovado">ETAPA 3</span>
+  </div>
+  <div class="info">
+   Registre quantas unidades retornaram fisicamente e quantas
+   definitivamente não retornarão.
+  </div>
+  <div class="tablewrap">
+   <table>
+    <thead>
+     <tr>
+      <th>CONTA</th><th>VENDA</th><th>SKU ENVIADO</th>
+      <th>ENVIADO</th><th>DEVOLVIDO</th><th>NÃO RETORNARÁ</th>
+      <th>EM ABERTO</th><th>AÇÕES</th>
+     </tr>
+    </thead>
+    <tbody id="tRetornos"></tbody>
+   </table>
+  </div>
+ </div>
+</section>
+
+<section id="relatorio" class="hidden">
+ <div class="card">
+  <div class="card-title">
+   <h2>Ajustes de estoque</h2>
+   <span class="pill aprovado">ETAPA 4</span>
+  </div>
+  <div class="notice">
+   O DEVOLUÇÃO ON não altera o Sysemp automaticamente.
+   Confirme somente movimentações já executadas.
+  </div>
+  <div class="filter-panel">
+   <div class="field">
+    <label>Conta</label>
+    <select id="fRelConta" onchange="render()">
+     <option value="">Todas as contas</option>
+     <option>ABX</option><option>GTX</option><option>DANFERX</option>
+     <option>RWX</option><option>DBX</option>
+    </select>
+   </div>
+   <div class="field">
+    <label>Data inicial</label>
+    <input id="fRelInicio" type="date" onchange="render()">
+   </div>
+   <div class="field">
+    <label>Data final</label>
+    <input id="fRelFim" type="date" onchange="render()">
+   </div>
+  </div>
+
+  <div class="mini-summary">
+   <div class="mini">
+    <span>Entradas pendentes</span>
+    <strong id="totalEntradas">0</strong>
+   </div>
+   <div class="mini">
+    <span>Baixas pendentes</span>
+    <strong id="totalBaixas">0</strong>
+   </div>
+   <div class="mini">
+    <span>Ajustes executados</span>
+    <strong id="totalExecutados">0</strong>
+   </div>
+  </div>
+
+  <div class="actions" style="margin-bottom:18px">
+   <button class="outline" onclick="exportarCSV()">
+    Exportar relatório CSV
+   </button>
+  </div>
+  <div class="tablewrap">
+   <table>
+    <thead>
+     <tr>
+      <th>CONTA</th><th>VENDA</th><th>TIPO</th><th>SKU</th>
+      <th>QUANTIDADE</th><th>STATUS</th><th>AÇÕES</th>
+     </tr>
+    </thead>
+    <tbody id="tAjustes"></tbody>
+   </table>
+  </div>
+ </div>
+</section>
+
+<section id="historico" class="hidden">
+ <div class="card">
+  <div class="card-title">
+   <h2>Histórico de reclamações</h2>
+   <span class="muted" style="font-size:12px">
+    Consulte, edite ou exclua ocorrências
+   </span>
+  </div>
+  <div class="filter-panel">
+   <div class="field">
+    <label>Buscar venda ou SKU</label>
+    <input id="fBusca" placeholder="Pesquisar..." oninput="render()">
+   </div>
+   <div class="field">
+    <label>Conta</label>
+    <select id="fConta" onchange="render()">
+     <option value="">Todas</option>
+     <option>ABX</option><option>GTX</option><option>DANFERX</option>
+     <option>RWX</option><option>DBX</option>
+    </select>
+   </div>
+   <div class="field">
+    <label>Status</label>
+    <select id="fStatus" onchange="render()">
+     <option value="">Todos</option>
+     <option value="rascunho">Rascunho</option>
+     <option value="pendente">Pendente</option>
+     <option value="revisao">Revisão</option>
+     <option value="aprovado">Em andamento</option>
+     <option value="concluido">Concluído</option>
+    </select>
+   </div>
+  </div>
+  <div class="tablewrap">
+   <table>
+    <thead>
+     <tr>
+      <th>CONTA</th><th>VENDA</th><th>DATA</th>
+      <th>PRODUTOS</th><th>PROGRESSO</th><th>STATUS</th><th>AÇÕES</th>
+     </tr>
+    </thead>
+    <tbody id="tHistorico"></tbody>
+   </table>
+  </div>
+ </div>
+</section>
+
+<section id="indicadores" class="hidden">
+ <div class="stats">
+  <div class="stat">
+   <div class="stat-top">Erros registrados</div>
+   <strong id="iErros">0</strong>
+  </div>
+  <div class="stat goldline">
+   <div class="stat-top">Vendas envolvidas</div>
+   <strong id="iVendas">0</strong>
+  </div>
+  <div class="stat blueline">
+   <div class="stat-top">SKUs envolvidos</div>
+   <strong id="iSkus">0</strong>
+  </div>
+  <div class="stat greenline">
+   <div class="stat-top">Ajustes executados</div>
+   <strong id="iExecutados">0</strong>
+  </div>
+ </div>
+ <div class="grid">
+  <div class="card">
+   <h2>Ocorrências por conta</h2>
+   <div id="gContas"></div>
+  </div>
+  <div class="card">
+   <h2>SKUs enviados errados</h2>
+   <div id="gSkus"></div>
+  </div>
+  <div class="card">
+   <h2>Ocorrências por mês</h2>
+   <div id="gMeses"></div>
+  </div>
+ </div>
+</section>
+</main>
+</div>
+</div>
+
+<div id="modal" class="dialog-backdrop hidden">
+ <div class="dialog">
+  <div class="dialog-head">
+   <h2 id="modalTitulo">Detalhes</h2>
+   <button class="dialog-close" onclick="fecharModal()">✕</button>
+  </div>
+  <div id="modalConteudo"></div>
+ </div>
+</div>
+
+<script>
+"use strict";
+
+const CHAVE="devolucao_on_v18";
+const CHAVE_ANTIGA="conciliacao_estoque_v1";
+
+let registros=[];
+let editando=null;
+let fotos=[];
+let armazenamentoOk=true;
+
+const $=id=>document.getElementById(id);
+const v=id=>$(id).value;
+
+function uuid(){
+ return window.crypto&&crypto.randomUUID
+  ?crypto.randomUUID()
+  :"id-"+Date.now()+"-"+Math.random().toString(36).slice(2);
+}
+function agora(){return new Date().toISOString()}
+function hoje(){
+ const d=new Date();
+ return d.getFullYear()+"-"+
+ String(d.getMonth()+1).padStart(2,"0")+"-"+
+ String(d.getDate()).padStart(2,"0");
+}
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function numero(x){return Number(x)||0}
+function inteiroPositivo(x){
+ return Number.isSafeInteger(x)&&x>0;
+}
+function status(r){
+ if(r.status==="rascunho")return "rascunho";
+ if(r.status==="revisao")return "revisao";
+ if(r.status==="concluido"||r.status==="corrigido")return "concluido";
+ if(r.status==="aprovado")return "aprovado";
+ return "pendente";
+}
+function nomeStatus(s){
+ return {
+  rascunho:"Rascunho",
+  revisao:"Revisão necessária",
+  pendente:"Aguardando conferência",
+  aprovado:"Em andamento",
+  concluido:"Concluído"
+ }[s]||s;
+}
+function criarAjuste(tipo,sku,qtd,itemId){
+ return {
+  id:uuid(),itemId,tipo,sku,qtd,
+  status:"pendente",criadoEm:agora(),
+  executadoEm:null,observacao:""
+ };
+}
+function historico(i,texto){
+ if(!Array.isArray(i.historico))i.historico=[];
+ i.historico.push({data:agora(),texto});
+}
+function guardar(dados){
+ if(!armazenamentoOk){
+  alert("O armazenamento não pôde ser carregado com segurança.");
+  return false;
+ }
+ try{
+  localStorage.setItem(CHAVE,JSON.stringify(dados));
+  registros=dados;
+  render();
+  return true;
+ }catch(e){
+  alert("Não foi possível salvar. Verifique o armazenamento do navegador.");
+  return false;
+ }
+}
+function carregar(){
+ try{
+  const atual=localStorage.getItem(CHAVE);
+  if(atual!==null){
+   const dados=JSON.parse(atual);
+   if(!Array.isArray(dados))throw Error("Formato inválido");
+   registros=dados;
+   return;
+  }
+
+  const antigo=localStorage.getItem(CHAVE_ANTIGA);
+  if(antigo===null){
+   registros=[];
+   return;
+  }
+
+  const dados=JSON.parse(antigo);
+  if(!Array.isArray(dados))throw Error("Formato antigo inválido");
+
+  registros=dados.map(r=>{
+   const origem=Array.isArray(r.itens)&&r.itens.length
+    ?r.itens
+    :Array.isArray(r.itensRascunho)&&r.itensRascunho.length
+     ?r.itensRascunho
+     :[r];
+
+   return {
+    id:r.id||uuid(),
+    conta:r.conta||"ABX",
+    venda:String(r.venda||""),
+    data:r.data||hoje(),
+    observacao:r.observacao||"",
+    fotos:Array.isArray(r.fotos)?r.fotos:[],
+    status:r.status==="rascunho"?"rascunho":"revisao",
+    legado:true,
+    criadoEm:r.criadoEm||agora(),
+    itens:origem.map(i=>({
+     id:uuid(),
+     baixa:String(i.baixa||i.vendido||""),
+     enviado:String(i.enviado||i.retorno||i.recebido||""),
+     qtd:numero(i.qtdBaixa||i.qtd||1),
+     retornou:0,
+     perdido:0,
+     conferido:false,
+     revisaoLegado:true,
+     ajustes:[],
+     historico:[{
+      data:agora(),
+      texto:"Importado de versão anterior. Revisão obrigatória."
+     }]
+    }))
+   };
+  });
+
+  localStorage.setItem(CHAVE,JSON.stringify(registros));
+ }catch(e){
+  armazenamentoOk=false;
+  registros=[];
+  alert(
+   "Não foi possível carregar os dados existentes. "+
+   "Novos salvamentos foram bloqueados para proteger os registros."
+  );
+ }
+}
+carregar();
+
+const paginas={
+ painel:["Visão geral","Acompanhe as reclamações e os ajustes pendentes."],
+ cadastro:["Nova reclamação","Registre o erro identificado após o contato do cliente."],
+ conferencia:["Conferência","Valide fisicamente os produtos antes de liberar ajustes."],
+ retornos:["Devoluções","Acompanhe o destino dos produtos enviados incorretamente."],
+ relatorio:["Ajustes Sysemp","Consulte e confirme entradas e baixas individualmente."],
+ historico:["Histórico","Consulte todas as ocorrências e seu andamento."],
+ indicadores:["Indicadores","Identifique os erros de expedição mais frequentes."]
+};
+
+function abrir(tela){
+ Object.keys(paginas).forEach(id=>{
+  $(id).classList.toggle("hidden",id!==tela);
+  $("nav-"+id).classList.toggle("active",id===tela);
+ });
+ $("tituloPagina").textContent=paginas[tela][0];
+ $("descricaoPagina").textContent=paginas[tela][1];
+ $("localAtual").textContent=paginas[tela][0];
+ $("botaoNova").classList.toggle("hidden",tela==="cadastro");
+ fecharModal();
+ render();
+ window.scrollTo(0,0);
+}
+
+function novo(){
+ editando=null;
+ fotos=[];
+ $("tituloForm").textContent="Registrar reclamação";
+ $("conta").value="ABX";
+ $("venda").value="";
+ $("data").value=hoje();
+ $("obs").value="";
+ $("fotoInput").value="";
+ $("itens").replaceChildren();
+ mostrarFotos();
+ adicionarLinha();
+ abrir("cadastro");
+}
+function adicionarLinha(item={}){
+ const div=document.createElement("div");
+ div.className="product";
+ div.innerHTML=`
+  <div class="product-head">
+   <h3>Produto</h3>
+   <div class="actions">
+    <button type="button" class="secondary small duplicar">Duplicar</button>
+    <button type="button" class="danger small remover">Remover</button>
+   </div>
+  </div>
+  <div class="grid">
+   <div class="field">
+    <label>SKU descontado no Sysemp</label>
+    <input class="baixa" placeholder="Ex.: 100">
+   </div>
+   <div class="field">
+    <label>SKU realmente enviado</label>
+    <input class="enviado" placeholder="Ex.: 200">
+   </div>
+   <div class="field">
+    <label>Quantidade enviada errada</label>
+    <input class="qtd" type="number" min="1" step="1">
+   </div>
+  </div>
+  <div class="result"></div>
+ `;
+ div.querySelector(".baixa").value=item.baixa||"";
+ div.querySelector(".enviado").value=item.enviado||"";
+ div.querySelector(".qtd").value=item.qtd??1;
+
+ div.querySelector(".remover").onclick=()=>{
+  div.remove();
+  renumerar();
+ };
+ div.querySelector(".duplicar").onclick=()=>{
+  adicionarLinha(lerLinha(div));
+ };
+ div.querySelectorAll("input").forEach(x=>
+  x.addEventListener("input",()=>conferirLinha(div))
+ );
+ $("itens").appendChild(div);
+ renumerar();
+ conferirLinha(div);
+}
+function renumerar(){
+ [...$("itens").children].forEach((x,i)=>{
+  x.querySelector("h3").textContent="Produto "+(i+1);
+ });
+}
+function lerLinha(div){
+ return {
+  baixa:div.querySelector(".baixa").value.trim(),
+  enviado:div.querySelector(".enviado").value.trim(),
+  qtd:Number(div.querySelector(".qtd").value)
+ };
+}
+function conferirLinha(div){
+ const i=lerLinha(div);
+ const box=div.querySelector(".result");
+ if(!i.baixa||!i.enviado){
+  box.className="result";
+  box.textContent="Preencha os dois SKUs para identificar a divergência.";
+ }else if(!inteiroPositivo(i.qtd)){
+  box.className="result bad";
+  box.textContent="Informe uma quantidade inteira maior que zero.";
+ }else if(i.baixa===i.enviado){
+  box.className="result warn";
+  box.textContent="Os SKUs são iguais. Esta área é destinada a erros de expedição.";
+ }else{
+  box.className="result ok";
+  box.textContent=
+   "Divergência identificada: o Sysemp descontou o SKU "+
+   i.baixa+", mas foi enviado o SKU "+i.enviado+
+   ". Após conferência física, poderá ser proposta uma entrada de +"+
+   i.qtd+" no SKU "+i.baixa+".";
+ }
+}
+function mostrarFotos(){
+ const box=$("fotosPreview");
+ box.replaceChildren();
+ fotos.forEach((src,i)=>{
+  const div=document.createElement("div");
+  div.className="photo";
+  const img=document.createElement("img");
+  img.src=src;
+  const btn=document.createElement("button");
+  btn.className="danger small";
+  btn.textContent="Remover";
+  btn.onclick=()=>{
+   fotos.splice(i,1);
+   mostrarFotos();
+  };
+  div.append(img,btn);
+  box.appendChild(div);
+ });
+}
+$("fotoInput").addEventListener("change",async e=>{
+ const arquivos=[...e.target.files];
+ if(arquivos.length+fotos.length>3){
+  alert("São permitidas até 3 fotos.");
+ }
+ for(const arquivo of arquivos.slice(0,Math.max(0,3-fotos.length))){
+  if(!arquivo.type.startsWith("image/"))continue;
+  try{
+   fotos.push(await comprimir(arquivo));
+  }catch(err){
+   alert("Não foi possível processar uma foto.");
+  }
+ }
+ e.target.value="";
+ mostrarFotos();
+});
+function comprimir(arquivo){
+ return new Promise((resolve,reject)=>{
+  const img=new Image();
+  const url=URL.createObjectURL(arquivo);
+  img.onload=()=>{
+   const escala=Math.min(1,700/Math.max(img.width,img.height));
+   const canvas=document.createElement("canvas");
+   canvas.width=Math.max(1,Math.round(img.width*escala));
+   canvas.height=Math.max(1,Math.round(img.height*escala));
+   canvas.getContext("2d").drawImage(
+    img,0,0,canvas.width,canvas.height
+   );
+   URL.revokeObjectURL(url);
+   resolve(canvas.toDataURL("image/jpeg",.55));
+  };
+  img.onerror=()=>{
+   URL.revokeObjectURL(url);
+   reject(Error("Imagem inválida"));
+  };
+  img.src=url;
+ });
+}
+function salvar(rascunho){
+ const conta=v("conta");
+ const venda=v("venda").trim();
+ const data=v("data");
+ const itens=[...$("itens").children].map(lerLinha);
+
+ if(!venda||!/^\d{4}-\d{2}-\d{2}$/.test(data)||!itens.length){
+  alert("Informe a venda, a data e pelo menos um produto.");
+  return;
+ }
+ if(!rascunho){
+  for(const i of itens){
+   if(!i.baixa||!i.enviado||i.baixa===i.enviado||
+    !inteiroPositivo(i.qtd)){
+    alert("Informe SKUs diferentes e quantidades válidas.");
+    return;
+   }
+  }
+ }
+
+ const anterior=registros.find(r=>r.id===editando);
+ if(anterior){
+  if(!["rascunho","pendente","revisao"].includes(status(anterior))){
+   alert("Esta ocorrência não pode ser editada.");
+   return;
+  }
+  if(anterior.itens.some(i=>
+   i.conferido||i.ajustes.length||i.retornou||i.perdido
+  )){
+   alert("Esta ocorrência já possui movimentações e não pode ser alterada.");
+   return;
+  }
+ }
+
+ const existentes=registros.filter(r=>r.id!==editando);
+ for(const i of itens){
+  if(existentes.some(r=>
+   r.conta===conta&&r.venda===venda&&
+   r.itens.some(x=>x.baixa===i.baixa&&x.enviado===i.enviado)
+  )){
+   if(!confirm(
+    "Possível reclamação duplicada!\n\n"+
+    "Conta: "+conta+"\nVenda: "+venda+
+    "\nSKU descontado: "+i.baixa+
+    "\nSKU enviado: "+i.enviado+
+    "\n\nConfirma que se trata de outra ocorrência legítima?"
+   ))return;
+  }
+ }
+
+ const registro={
+  id:editando||uuid(),
+  conta,venda,data,
+  observacao:v("obs"),
+  fotos:[...fotos],
+  status:rascunho?"rascunho":"pendente",
+  criadoEm:anterior?.criadoEm||agora(),
+  atualizadoEm:agora(),
+  itens:itens.map(i=>({
+   id:uuid(),...i,retornou:0,perdido:0,
+   conferido:false,revisaoLegado:false,
+   ajustes:[],
+   historico:[{data:agora(),texto:"Reclamação cadastrada."}]
+  }))
+ };
+
+ if(guardar([...existentes,registro])){
+  alert(rascunho?"Rascunho salvo.":"Reclamação registrada com sucesso.");
+  editando=null;
+  abrir(rascunho?"historico":"conferencia");
+ }
+}
+function editar(id){
+ const r=registros.find(x=>x.id===id);
+ if(!r||!["rascunho","pendente","revisao"].includes(status(r)))return;
+ if(r.itens.some(i=>i.conferido||i.ajustes.length||i.retornou||i.perdido)){
+  alert("Não é possível editar uma ocorrência com movimentações.");
+  return;
+ }
+ novo();
+ editando=id;
+ $("tituloForm").textContent="Editar reclamação";
+ $("conta").value=r.conta;
+ $("venda").value=r.venda;
+ $("data").value=r.data;
+ $("obs").value=r.observacao||"";
+ $("itens").replaceChildren();
+ r.itens.forEach(i=>adicionarLinha(i));
+ fotos=[...(r.fotos||[])];
+ mostrarFotos();
+}
+
+/*
+==================================================
+V1.9.1 — EXCLUSÃO INDIVIDUAL E EXCLUSÃO COMPLETA
+==================================================
+*/
+
+// Identifica se a exclusão afeta uma movimentação já confirmada.
+function possuiAjusteExecutado(itens){
+ return itens.some(i=>
+  (i.ajustes||[]).some(a=>a.status==="executado")
+ );
+}
+
+// Confirma exclusões comuns ou com movimentações já executadas.
+function confirmarExclusao(titulo,descricao,itens){
+ const executado=possuiAjusteExecutado(itens);
+
+ const aviso=executado
+  ?"\n\nATENÇÃO: EXISTEM AJUSTES JÁ CONFIRMADOS NO SYSEMP."+
+   "\nExcluir o registro NÃO desfaz essas movimentações."+
+   "\nO histórico desses ajustes será removido do DEVOLUÇÃO ON."
+  :"\n\nEsta ação removerá os registros selecionados do DEVOLUÇÃO ON."+
+   "\nNenhuma movimentação será realizada no Sysemp.";
+
+ if(!confirm(titulo+"\n\n"+descricao+aviso+"\n\nDeseja continuar?")){
+  return false;
+ }
+
+ // Segunda confirmação para exclusão com ajuste executado.
+ if(executado){
+  const resposta=prompt(
+   "CONFIRMAÇÃO ESPECIAL\n\n"+
+   "Esta exclusão removerá informações de ajustes já executados.\n"+
+   "Digite EXCLUIR para confirmar:"
+  );
+  return resposta==="EXCLUIR";
+ }
+
+ return true;
+}
+
+// Exclui uma reclamação completa.
+function excluirDevolucao(registroId){
+ const r=registros.find(x=>x.id===registroId);
+ if(!r)return;
+
+ const descricao=
+  "Conta: "+r.conta+
+  "\nVenda: "+r.venda+
+  "\nQuantidade de itens: "+r.itens.length+
+  "\n\nTodos os itens desta devolução serão excluídos.";
+
+ if(!confirmarExclusao(
+  "EXCLUIR DEVOLUÇÃO COMPLETA",
+  descricao,
+  r.itens
+ ))return;
+
+ const novos=registros.filter(x=>x.id!==registroId);
+
+ if(guardar(novos)){
+  fecharModal();
+  alert("Devolução completa excluída com sucesso.");
+ }
+}
+
+// Exclui somente um item da devolução.
+function excluirItem(registroId,itemId){
+ const r=registros.find(x=>x.id===registroId);
+ if(!r)return;
+
+ const i=r.itens.find(x=>x.id===itemId);
+ if(!i)return;
+
+ const descricao=
+  "Conta: "+r.conta+
+  "\nVenda: "+r.venda+
+  "\nSKU descontado: "+i.baixa+
+  "\nSKU enviado: "+i.enviado+
+  "\nQuantidade: "+i.qtd+
+  "\n\nSomente este item será excluído.";
+
+ if(!confirmarExclusao(
+  "EXCLUIR APENAS ESTE ITEM",
+  descricao,
+  [i]
+ ))return;
+
+ const dados=clone(registros);
+ const registro=dados.find(x=>x.id===registroId);
+ if(!registro)return;
+
+ registro.itens=registro.itens.filter(x=>x.id!==itemId);
+
+ // Se o item excluído era o último, remove a ocorrência vazia.
+ if(registro.itens.length===0){
+  const restantes=dados.filter(x=>x.id!==registroId);
+  if(guardar(restantes)){
+   fecharModal();
+   alert(
+    "Item excluído. Como era o último produto, "+
+    "a devolução completa também foi removida."
+   );
+  }
+  return;
+ }
+
+ // Recalcula o status sem afetar os outros itens.
+ recalcularStatus(registro);
+ registro.atualizadoEm=agora();
+
+ if(guardar(dados)){
+  fecharModal();
+  alert(
+   "Item excluído com sucesso.\n"+
+   "Os demais produtos desta devolução foram mantidos."
+  );
+ }
+}
+
+function quantidadeExecutada(i,tipo){
+ return (i.ajustes||[])
+  .filter(a=>a.tipo===tipo&&a.status==="executado")
+  .reduce((s,a)=>s+numero(a.qtd),0);
+}
+function recalcularStatus(r){
+ if(r.status==="rascunho")return;
+ if(r.itens.some(i=>i.revisaoLegado)){
+  r.status="revisao";
+  return;
+ }
+ const completo=r.itens.every(i=>
+  i.conferido&&
+  numero(i.retornou)+numero(i.perdido)===numero(i.qtd)&&
+  quantidadeExecutada(i,"entrada")===numero(i.qtd)&&
+  quantidadeExecutada(i,"baixa")===numero(i.perdido)&&
+  !i.ajustes.some(a=>a.status==="pendente")
+ );
+ if(completo)r.status="concluido";
+ else if(r.itens.some(i=>i.conferido))r.status="aprovado";
+ else r.status="pendente";
+}
+function conferirItem(registroId,itemId){
+ const dados=clone(registros);
+ const r=dados.find(x=>x.id===registroId);
+ const i=r?.itens.find(x=>x.id===itemId);
+ if(!r||!i||i.conferido)return;
+
+ if(i.revisaoLegado){
+  alert(
+   "Este registro veio de uma versão anterior e precisa de "+
+   "reconciliação manual. Nenhuma entrada será liberada automaticamente."
+  );
+  return;
+ }
+ if(!i.baixa||!i.enviado||i.baixa===i.enviado||
+  !inteiroPositivo(i.qtd)){
+  alert("Informações inválidas para conferência.");
+  return;
+ }
+ if(!confirm(
+  "CONFIRMAR CONFERÊNCIA FÍSICA\n\n"+
+  "Venda: "+r.venda+
+  "\nSKU descontado: "+i.baixa+
+  "\nSKU enviado: "+i.enviado+
+  "\nQuantidade: "+i.qtd+
+  "\n\nConfirma que:\n"+
+  "1. O SKU descontado permaneceu fisicamente no estoque;\n"+
+  "2. O SKU enviado realmente saiu;\n"+
+  "3. Nenhuma entrada anterior foi realizada no Sysemp?"
+ ))return;
+
+ i.conferido=true;
+ i.ajustes.push(criarAjuste("entrada",i.baixa,i.qtd,i.id));
+ historico(i,"Conferência física aprovada. Entrada proposta: +"+
+  i.qtd+" no SKU "+i.baixa+".");
+ recalcularStatus(r);
+ if(guardar(dados)){
+  alert("Conferência aprovada. Entrada liberada nos ajustes Sysemp.");
+ }
+}
+function atualizarRetorno(registroId,itemId){
+ const dados=clone(registros);
+ const r=dados.find(x=>x.id===registroId);
+ const i=r?.itens.find(x=>x.id===itemId);
+ if(!r||!i)return;
+ if(i.revisaoLegado){
+  alert("Registro antigo bloqueado para revisão.");
+  return;
+ }
+
+ const retornou=prompt(
+  "Quantidade do SKU "+i.enviado+" que retornou FISICAMENTE ao estoque:",
+  String(i.retornou)
+ );
+ if(retornou===null)return;
+
+ const perdido=prompt(
+  "Quantidade que DEFINITIVAMENTE não retornará:",
+  String(i.perdido)
+ );
+ if(perdido===null)return;
+
+ if(!/^\d+$/.test(retornou.trim())||
+  !/^\d+$/.test(perdido.trim())){
+  alert("Informe quantidades inteiras não negativas.");
+  return;
+ }
+
+ const nr=Number(retornou);
+ const np=Number(perdido);
+
+ if(!Number.isSafeInteger(nr)||!Number.isSafeInteger(np)||
+  nr+np>i.qtd){
+  alert("As quantidades não podem superar o total enviado.");
+  return;
+ }
+ if(nr<i.retornou||np<i.perdido){
+  alert(
+   "Não é permitido reduzir quantidades já registradas. "+
+   "Uma correção desse tipo exige revisão manual."
+  );
+  return;
+ }
+ if(nr===i.retornou&&np===i.perdido)return;
+
+ const delta=np-i.perdido;
+
+ if(delta>0&&!i.conferido){
+  alert("Faça a conferência física antes de liberar uma baixa.");
+  return;
+ }
+
+ if(!confirm(
+  "CONFIRMAR RETORNO\n\n"+
+  "SKU enviado: "+i.enviado+
+  "\nDevolvido: "+nr+
+  "\nNão retornará: "+np+
+  "\nAinda indefinido: "+(i.qtd-nr-np)+
+  (delta>0?"\n\nSerá proposta uma baixa de "+delta+" unidade(s).":"")
+ ))return;
+
+ i.retornou=nr;
+ i.perdido=np;
+
+ if(delta>0){
+  i.ajustes.push(criarAjuste("baixa",i.enviado,delta,i.id));
+ }
+
+ historico(
+  i,"Retorno atualizado: "+nr+" devolvida(s), "+
+  np+" sem retorno definitivo, "+(i.qtd-nr-np)+" indefinida(s)."
+ );
+ recalcularStatus(r);
+ guardar(dados);
+}
+function executarAjuste(registroId,itemId,ajusteId){
+ const dados=clone(registros);
+ const r=dados.find(x=>x.id===registroId);
+ const i=r?.itens.find(x=>x.id===itemId);
+ const a=i?.ajustes.find(x=>x.id===ajusteId);
+
+ if(!r||!i||!a||a.status!=="pendente")return;
+
+ if(!i.conferido||i.revisaoLegado){
+  alert("Ajuste bloqueado por falta de conferência.");
+  return;
+ }
+
+ if(!confirm(
+  "CONFIRMAÇÃO DE AJUSTE NO SYSEMP\n\n"+
+  "Conta: "+r.conta+
+  "\nVenda: "+r.venda+
+  "\nTipo: "+(a.tipo==="entrada"?"ENTRADA (+)":"BAIXA (−)")+
+  "\nSKU: "+a.sku+
+  "\nQuantidade: "+a.qtd+
+  "\n\nConfirma que esta movimentação JÁ FOI realizada manualmente no Sysemp?"
+ ))return;
+
+ a.status="executado";
+ a.executadoEm=agora();
+
+ historico(
+  i,(a.tipo==="entrada"?"Entrada":"Baixa")+
+  " confirmada no Sysemp: SKU "+a.sku+
+  ", quantidade "+a.qtd+"."
+ );
+
+ recalcularStatus(r);
+ guardar(dados);
+}
+function fecharModal(){
+ $("modal").classList.add("hidden");
+ $("modalConteudo").replaceChildren();
+}
+$("modal").addEventListener("click",e=>{
+ if(e.target===$("modal"))fecharModal();
+});
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape")fecharModal();
+});
+function criar(tag,texto,classe){
+ const elemento=document.createElement(tag);
+ if(texto!==undefined)elemento.textContent=String(texto);
+ if(classe)elemento.className=classe;
+ return elemento;
+}
+function detalhePar(container,titulo,valor){
+ const div=criar("div");
+ div.append(criar("span",titulo),criar("strong",valor));
+ container.appendChild(div);
+}
+function detalhes(id){
+ const r=registros.find(x=>x.id===id);
+ if(!r)return;
+
+ $("modalTitulo").textContent="Venda "+r.venda;
+ const box=$("modalConteudo");
+ box.replaceChildren();
+
+ const topo=criar("div",undefined,"detail-block");
+ const pares=criar("div",undefined,"detail-pairs");
+ detalhePar(pares,"CONTA",r.conta);
+ detalhePar(pares,"DATA",r.data);
+ detalhePar(pares,"STATUS",nomeStatus(status(r)));
+ topo.appendChild(pares);
+ box.appendChild(topo);
+
+ if(r.observacao){
+  const obs=criar("div",undefined,"detail-block");
+  obs.append(criar("h3","Observações"),criar("p",r.observacao));
+  box.appendChild(obs);
+ }
+
+ r.itens.forEach((i,n)=>{
+  const bloco=criar("div",undefined,"detail-block");
+
+  const cabecalho=criar("div",undefined,"card-title");
+  cabecalho.appendChild(criar("h3","Produto "+(n+1)));
+
+  // V1.9.1: exclusão individual dentro dos detalhes.
+  const excluir=criar("button","Excluir este item","danger small");
+  excluir.onclick=()=>excluirItem(r.id,i.id);
+  cabecalho.appendChild(excluir);
+  bloco.appendChild(cabecalho);
+
+  const dados=criar("div",undefined,"detail-pairs");
+  detalhePar(dados,"SKU DESCONTADO",i.baixa);
+  detalhePar(dados,"SKU ENVIADO",i.enviado);
+  detalhePar(dados,"QUANTIDADE",i.qtd);
+  detalhePar(dados,"DEVOLVIDO",i.retornou);
+  detalhePar(dados,"NÃO RETORNARÁ",i.perdido);
+  detalhePar(
+   dados,"EM ABERTO",
+   Math.max(0,i.qtd-i.retornou-i.perdido)
+  );
+  bloco.appendChild(dados);
+
+  const subtitulo=criar("h3","Ajustes");
+  subtitulo.style.marginTop="18px";
+  bloco.appendChild(subtitulo);
+
+  if(!i.ajustes.length){
+   bloco.appendChild(criar("p","Nenhum ajuste liberado.","muted"));
+  }
+
+  i.ajustes.forEach(a=>{
+   const linha=criar("div",undefined,"timeline-item");
+   linha.appendChild(criar(
+    "strong",
+    (a.tipo==="entrada"?"Entrada +":"Baixa −")+
+    a.qtd+" | SKU "+a.sku
+   ));
+   linha.appendChild(criar(
+    "small",
+    a.status==="executado"?"Executado":"Pendente"
+   ));
+   bloco.appendChild(linha);
+  });
+
+  const tituloHist=criar("h3","Histórico do produto");
+  tituloHist.style.marginTop="18px";
+  bloco.appendChild(tituloHist);
+
+  const timeline=criar("div",undefined,"timeline");
+
+  (i.historico||[]).slice().reverse().forEach(h=>{
+   const linha=criar("div",undefined,"timeline-item");
+   linha.appendChild(criar(
+    "small",
+    h.data?new Date(h.data).toLocaleString("pt-BR"):"Sem data"
+   ));
+   linha.appendChild(criar("div",h.texto));
+   timeline.appendChild(linha);
+  });
+
+  bloco.appendChild(timeline);
+  box.appendChild(bloco);
+ });
+
+ if(r.fotos?.length){
+  box.appendChild(criar("h3","Fotos da ocorrência"));
+  const galeria=criar("div",undefined,"photo-preview");
+  r.fotos.forEach(src=>{
+   const img=criar("img");
+   img.src=src;
+   img.style.cursor="pointer";
+   img.onclick=()=>window.open(src,"_blank");
+   galeria.appendChild(img);
+  });
+  box.appendChild(galeria);
+ }
+
+ // V1.9.1: exclusão completa dentro dos detalhes.
+ const aviso=criar(
+  "div",
+  "A exclusão remove os registros do DEVOLUÇÃO ON, "+
+  "mas não desfaz movimentações realizadas no Sysemp.",
+  "delete-note"
+ );
+ box.appendChild(aviso);
+
+ const excluirTudo=criar(
+  "button",
+  "Excluir devolução completa",
+  "danger"
+ );
+ excluirTudo.onclick=()=>excluirDevolucao(r.id);
+ box.appendChild(excluirTudo);
+
+ $("modal").classList.remove("hidden");
+}
+function progresso(r){
+ if(status(r)==="rascunho")return 0;
+ if(r.itens.some(i=>i.revisaoLegado))return 0;
+ if(!r.itens.length)return 0;
+
+ let soma=0;
+
+ r.itens.forEach(i=>{
+  const conferido=i.conferido?1:0;
+  const definido=(i.retornou+i.perdido===i.qtd)?1:0;
+  const entrada=quantidadeExecutada(i,"entrada")===i.qtd?1:0;
+  const baixa=quantidadeExecutada(i,"baixa")===i.perdido?1:0;
+  soma+=(conferido+definido+entrada+baixa)/4;
+ });
+
+ return Math.round(soma/r.itens.length*100);
+}
+function cel(tr,valor){
+ const td=criar("td",valor);
+ tr.appendChild(td);
+ return td;
+}
+function botoes(tr,opcoes){
+ const td=criar("td");
+ const div=criar("div",undefined,"row-actions");
+
+ opcoes.forEach(([nome,classe,fn])=>{
+  const b=criar("button",nome,classe+" small");
+  b.onclick=fn;
+  div.appendChild(b);
+ });
+
+ td.appendChild(div);
+ tr.appendChild(td);
+}
+function pill(tr,s){
+ const td=criar("td");
+ td.appendChild(criar("span",nomeStatus(s),"pill "+s));
+ tr.appendChild(td);
+}
+function vazio(tbody,colunas,mensagem="Nenhum registro encontrado."){
+ if(tbody.children.length)return;
+ const tr=criar("tr");
+ const td=cel(tr,mensagem);
+ td.colSpan=colunas;
+ td.className="empty";
+ tbody.appendChild(tr);
+}
+function progressoCel(tr,r){
+ const td=criar("td");
+ const percentual=progresso(r);
+ const texto=criar("div",percentual+"%");
+ texto.style.fontWeight="800";
+
+ const trilha=criar("div",undefined,"progress");
+ const preenchimento=criar("div");
+ preenchimento.style.width=percentual+"%";
+ trilha.appendChild(preenchimento);
+
+ td.append(texto,trilha);
+ tr.appendChild(td);
+}
+function ajustesFiltrados(){
+ return registros.flatMap(r=>
+  r.itens.flatMap(i=>
+   (i.ajustes||[]).map(a=>({r,i,a}))
+  )
+ ).filter(({r})=>
+  (!v("fRelConta")||r.conta===v("fRelConta"))&&
+  (!v("fRelInicio")||r.data>=v("fRelInicio"))&&
+  (!v("fRelFim")||r.data<=v("fRelFim"))
+ );
+}
+function exportarCSV(){
+ const linhas=[
+  ["Conta","Venda","Data","Tipo","SKU","Quantidade","Status","Executado em"]
+ ];
+
+ ajustesFiltrados().forEach(({r,a})=>{
+  linhas.push([
+   r.conta,r.venda,r.data,a.tipo,a.sku,
+   a.qtd,a.status,a.executadoEm||""
+  ]);
+ });
+
+ if(linhas.length===1){
+  alert("Nenhum ajuste para exportar.");
+  return;
+ }
+
+ const csv="\uFEFF"+linhas.map(l=>
+  l.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(";")
+ ).join("\r\n");
+
+ const url=URL.createObjectURL(new Blob(
+  [csv],{type:"text/csv;charset=utf-8"}
+ ));
+
+ const a=criar("a");
+ a.href=url;
+ a.download="devolucao_on_ajustes.csv";
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function contar(lista,fn){
+ const mapa=new Map();
+
+ lista.forEach(x=>{
+  const chave=fn(x);
+  mapa.set(chave,(mapa.get(chave)||0)+1);
+ });
+
+ return [...mapa].sort((a,b)=>b[1]-a[1]);
+}
+function barras(id,pares){
+ const box=$(id);
+ box.replaceChildren();
+
+ if(!pares.length){
+  box.appendChild(criar("p","Sem dados para exibir.","muted"));
+  return;
+ }
+
+ const max=Math.max(...pares.map(x=>x[1]),1);
+
+ pares.slice(0,10).forEach(([nome,n])=>{
+  const row=criar("div",undefined,"bar-row");
+  const titulo=criar("span",nome);
+  const track=criar("div",undefined,"bar-track");
+  const fill=criar("div",undefined,"bar-fill");
+  fill.style.width=(n/max*100)+"%";
+  track.appendChild(fill);
+  row.append(titulo,track,criar("strong",n));
+  box.appendChild(row);
+ });
+}
+function render(){
+ const ativos=registros.filter(r=>status(r)!=="rascunho");
+ const itens=ativos.flatMap(r=>r.itens.map(i=>({r,i})));
+ const ajustes=itens.flatMap(({r,i})=>
+  (i.ajustes||[]).map(a=>({r,i,a}))
+ );
+
+ $("sTotal").textContent=ativos.length;
+ $("sConf").textContent=itens.filter(x=>!x.i.conferido).length;
+ $("sAjustes").textContent=ajustes.filter(x=>x.a.status==="pendente").length;
+ $("sRetornos").textContent=itens.filter(x=>
+  !x.i.revisaoLegado&&x.i.qtd>x.i.retornou+x.i.perdido
+ ).length;
+
+ // VISÃO GERAL
+ const recentes=$("tRecentes");
+ recentes.replaceChildren();
+
+ ativos.filter(r=>status(r)!=="concluido")
+  .slice()
+  .sort((a,b)=>(b.criadoEm||"").localeCompare(a.criadoEm||""))
+  .slice(0,7)
+  .forEach(r=>{
+   const tr=criar("tr");
+   [r.conta,r.venda,r.data].forEach(x=>cel(tr,x));
+   progressoCel(tr,r);
+   pill(tr,status(r));
+   botoes(tr,[
+    ["Ver detalhes","outline",()=>detalhes(r.id)],
+    ["Excluir tudo","danger",()=>excluirDevolucao(r.id)]
+   ]);
+   recentes.appendChild(tr);
+  });
+
+ vazio(recentes,6,"Nenhuma ocorrência pendente.");
+
+ // CONFERÊNCIA — BOTÕES DE EXCLUSÃO
+ const tc=$("tConferencia");
+ tc.replaceChildren();
+
+ itens.filter(x=>!x.i.conferido).forEach(({r,i})=>{
+  const tr=criar("tr");
+  [r.conta,r.venda,i.baixa,i.enviado,i.qtd].forEach(x=>cel(tr,x));
+
+  cel(tr,i.revisaoLegado?"Revisão de dados antigos":"Pendente");
+
+  botoes(tr,[
+   ["Conferir","green",()=>conferirItem(r.id,i.id)],
+   ["Detalhes","outline",()=>detalhes(r.id)],
+   ["Excluir item","danger",()=>excluirItem(r.id,i.id)],
+   ["Excluir tudo","secondary",()=>excluirDevolucao(r.id)]
+  ]);
+
+  tc.appendChild(tr);
+ });
+
+ vazio(tc,7,"Nenhuma conferência pendente.");
+
+ // DEVOLUÇÕES
+ const tret=$("tRetornos");
+ tret.replaceChildren();
+
+ itens.filter(x=>!x.i.revisaoLegado).forEach(({r,i})=>{
+  const tr=criar("tr");
+
+  [
+   r.conta,r.venda,i.enviado,i.qtd,
+   i.retornou,i.perdido,
+   Math.max(0,i.qtd-i.retornou-i.perdido)
+  ].forEach(x=>cel(tr,x));
+
+  botoes(tr,[
+   ["Atualizar","outline",()=>atualizarRetorno(r.id,i.id)],
+   ["Excluir item","danger",()=>excluirItem(r.id,i.id)]
+  ]);
+
+  tret.appendChild(tr);
+ });
+
+ vazio(tret,8,"Nenhuma devolução para acompanhar.");
+
+ // AJUSTES
+ const ta=$("tAjustes");
+ ta.replaceChildren();
+
+ ajustesFiltrados().forEach(({r,i,a})=>{
+  const tr=criar("tr");
+
+  [
+   r.conta,r.venda,
+   a.tipo==="entrada"?"ENTRADA (+)":"BAIXA (−)",
+   a.sku,a.qtd
+  ].forEach(x=>cel(tr,x));
+
+  const td=criar("td");
+  td.appendChild(criar(
+   "span",
+   a.status==="executado"?"Executado":"Pendente",
+   "pill "+(a.status==="executado"?"executado":"pendente")
+  ));
+  tr.appendChild(td);
+
+  const op=a.status==="pendente"
+   ?[["Confirmar execução","green",
+      ()=>executarAjuste(r.id,i.id,a.id)]]
+   :[["Detalhes","outline",()=>detalhes(r.id)]];
+
+  op.push(["Excluir item","danger",()=>excluirItem(r.id,i.id)]);
+
+  botoes(tr,op);
+  ta.appendChild(tr);
+ });
+
+ vazio(ta,7,"Nenhum ajuste encontrado.");
+
+ const filtrados=ajustesFiltrados();
+
+ $("totalEntradas").textContent=filtrados
+  .filter(x=>x.a.tipo==="entrada"&&x.a.status==="pendente")
+  .reduce((s,x)=>s+numero(x.a.qtd),0);
+
+ $("totalBaixas").textContent=filtrados
+  .filter(x=>x.a.tipo==="baixa"&&x.a.status==="pendente")
+  .reduce((s,x)=>s+numero(x.a.qtd),0);
+
+ $("totalExecutados").textContent=filtrados
+  .filter(x=>x.a.status==="executado").length;
+
+ // HISTÓRICO
+ const th=$("tHistorico");
+ th.replaceChildren();
+
+ registros.filter(r=>{
+  const busca=v("fBusca").trim().toLowerCase();
+
+  return (!v("fConta")||r.conta===v("fConta"))&&
+   (!v("fStatus")||status(r)===v("fStatus"))&&
+   (!busca||[
+    r.venda,...r.itens.flatMap(i=>[i.baixa,i.enviado])
+   ].some(x=>String(x||"").toLowerCase().includes(busca)));
+ })
+ .slice()
+ .sort((a,b)=>(b.criadoEm||"").localeCompare(a.criadoEm||""))
+ .forEach(r=>{
+  const tr=criar("tr");
+
+  [r.conta,r.venda,r.data,r.itens.length].forEach(x=>cel(tr,x));
+  progressoCel(tr,r);
+  pill(tr,status(r));
+
+  const op=[
+   ["Ver detalhes","outline",()=>detalhes(r.id)],
+   ["Excluir tudo","danger",()=>excluirDevolucao(r.id)]
+  ];
+
+  if(["rascunho","pendente","revisao"].includes(status(r))&&
+   !r.itens.some(i=>
+    i.conferido||i.ajustes.length||i.retornou||i.perdido
+   )){
+   op.splice(1,0,["Editar","secondary",()=>editar(r.id)]);
+  }
+
+  botoes(tr,op);
+  th.appendChild(tr);
+ });
+
+ vazio(th,7,"Nenhuma reclamação encontrada.");
+
+ // INDICADORES
+ $("iErros").textContent=itens.length;
+ $("iVendas").textContent=new Set(
+  itens.map(x=>x.r.conta+"|"+x.r.venda)
+ ).size;
+ $("iSkus").textContent=new Set(
+  itens.flatMap(x=>[x.i.baixa,x.i.enviado]).filter(Boolean)
+ ).size;
+ $("iExecutados").textContent=ajustes
+  .filter(x=>x.a.status==="executado").length;
+
+ barras("gContas",contar(itens,x=>x.r.conta));
+ barras("gSkus",contar(itens,x=>x.i.enviado));
+ barras(
+  "gMeses",
+  contar(itens,x=>(x.r.data||"").slice(0,7))
+   .sort((a,b)=>a[0].localeCompare(b[0]))
+ );
+}
+
+abrir("painel");
+</script>
+</body>
+</html>
